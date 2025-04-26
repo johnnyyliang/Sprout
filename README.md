@@ -6,3 +6,4 @@
 * Winston Ni (2027, CDS)
 * Zoey Jin (2028, H4I)
 * Johnny Liang (2028, H4I)
+* Andrew Da (2027, CDS)
