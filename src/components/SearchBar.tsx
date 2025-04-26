@@ -4,29 +4,29 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function SearchBar() {
-  const [query, setQuery] = useState('')
+  const [ticker, setTicker] = useState('')
   const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
-      router.push(`/company/${query.trim().toUpperCase()}`)
+    if (ticker.trim()) {
+      router.push(`/company/${ticker.trim().toUpperCase()}`)
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
-      <div className="flex gap-2">
+      <div className="relative">
         <input
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={ticker}
+          onChange={(e) => setTicker(e.target.value)}
           placeholder="Enter company ticker (e.g., AAPL)"
-          className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full px-6 py-4 text-lg bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#4CAF50]/30 transition-all duration-300"
         />
         <button
           type="submit"
-          className="px-6 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-[#2E7D32] to-[#388E3C] text-white px-6 py-2 rounded-xl hover:from-[#388E3C] hover:to-[#1B5E20] transition-all duration-300"
         >
           Search
         </button>

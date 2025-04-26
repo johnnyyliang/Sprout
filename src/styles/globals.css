@@ -2,12 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+@layer utilities {
+  .animate-gradient {
+    background-size: 300% 300%;
+    animation: gradientShift 10s ease infinite;
+  }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-} 
+/* Smoother, more elegant gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Custom Denim Blue Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(173, 216, 230, 0.1); /* light blue hint for track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(70, 130, 180, 0.6); /* denim blue thumb */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(70, 130, 180, 0.8); /* darker denim blue on hover */
+}

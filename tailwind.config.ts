@@ -9,20 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        green: {
-          light: '#4ade80',
-          DEFAULT: '#22c55e',
-          dark: '#16a34a',
+        primary: {
+          DEFAULT: '#1E88E5',
+          light: '#64B5F6',
+          dark: '#1565C0',
         },
-        yellow: {
-          light: '#fbbf24',
-          DEFAULT: '#f59e0b',
-          dark: '#d97706',
+        accent: {
+          DEFAULT: '#FFD700',
+          light: '#FFE44D',
+          dark: '#FFC107',
         },
-        red: {
-          light: '#f87171',
-          DEFAULT: '#ef4444',
-          dark: '#dc2626',
+        secondary: {
+          DEFAULT: '#4ECDC4',
+          light: '#7FE0D9',
+          dark: '#45B7AF',
         },
       },
     },
