@@ -3,7 +3,11 @@ import EsgGradeCard from '@/components/EsgGradeCard'
 import GrowthMetricsCard from '@/components/GrowthMetricsCard'
 
 async function getCompanyData(ticker: string): Promise<CompanyData> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/company/${ticker}`)
+  const baseUrl =
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+  const res = await fetch(`${baseUrl}/api/company/${ticker}`);
   if (!res.ok) {
     throw new Error('Failed to fetch company data')
   }
