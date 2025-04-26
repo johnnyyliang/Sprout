@@ -1,1 +1,4 @@
-Our Green Investing App
+# Our Green Investing App
+
+## Creators
+* Mihir Kulshreshtha (2028, CDS)
