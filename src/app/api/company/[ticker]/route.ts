@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { CompanyData } from '@/lib/types'
+import { execSync } from 'child_process'
 
 export async function GET(
   request: Request,
@@ -7,21 +8,29 @@ export async function GET(
 ) {
   try {
     const ticker = params.ticker.toUpperCase()
-    
-    // TODO: Replace with actual API calls
-    // This is mock data for now
-    const mockData: CompanyData = {
-      ticker,
-      name: 'Example Company',
-      esgScore: 75,
-      esgGrade: 'Green',
-      carbonIntensity: 2.5,
-      revenueGrowth1Y: 15.5,
-      revenueGrowth3Y: 25.8,
-      forwardEpsGrowth: 12.3,
+
+    // Call the Python script to get the environmental score
+    let esgScore: number | null = null
+    try {
+      const output = execSync(`python3 EnvIndex.py ${ticker}`).toString().trim()
+      esgScore = isNaN(Number(output)) ? null : Number(output)
+    } catch (e) {
+      esgScore = null
     }
 
-    return NextResponse.json(mockData)
+    // TODO: Replace the rest with real data as needed
+    const data: CompanyData = {
+      ticker,
+      name: ticker, // Placeholder, ideally fetch real name
+      esgScore: esgScore ?? 0,
+      esgGrade: esgScore !== null ? (esgScore < 20 ? 'Green' : esgScore < 40 ? 'Yellow' : 'Red') : 'Red',
+      carbonIntensity: null,
+      revenueGrowth1Y: 0,
+      revenueGrowth3Y: 0,
+      forwardEpsGrowth: 0,
+    }
+
+    return NextResponse.json(data)
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch company data' },
