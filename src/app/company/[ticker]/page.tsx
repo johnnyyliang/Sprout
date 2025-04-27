@@ -2,6 +2,8 @@
 
 import { useParams } from 'next/navigation';
 import GradeCard from '@/components/GradeCard';
+import Link from 'next/link';
+
 
 // Mock data - in a real app, this would come from an API
 const getCompanyData = (ticker: string) => {
@@ -53,11 +55,19 @@ export default function CompanyPage() {
   const companyData = getCompanyData(ticker);
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen bg-gradient-to-br from-[#0d2b1e] via-[#123d15] to-[#1b5e20] bg-fixed p-8">
+      {/* Back Button */}
+      <div className="absolute top-8 left-8">
+        <Link href="/">
+          <button className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold transition text-sm">
+            ← Back
+          </button>
+        </Link>
+      </div>
       <div className="max-w-7xl mx-auto">
         {/* Company Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#ffd700]">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
             {companyData.name}
           </h1>
           <div className="text-xl text-white/80">
@@ -67,6 +77,7 @@ export default function CompanyPage() {
             {companyData.description}
           </p>
         </div>
+        
 
         {/* ESG Grade Card */}
         <div className="mb-12">
@@ -81,19 +92,19 @@ export default function CompanyPage() {
 
         {/* Additional Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
+          <div className="bg-[#1b462e] rounded-3xl p-6 shadow-lg">
             <h3 className="text-xl font-semibold mb-2 text-white">Environmental Impact</h3>
             <p className="text-white/80">
               Carbon footprint reduction initiatives and renewable energy usage.
             </p>
           </div>
-          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
+          <div className="bg-[#1b462e] rounded-3xl p-6 shadow-lg">
             <h3 className="text-xl font-semibold mb-2 text-white">Social Responsibility</h3>
             <p className="text-white/80">
               Employee welfare programs and community engagement efforts.
             </p>
           </div>
-          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
+          <div className="bg-[#1b462e] rounded-3xl p-6 shadow-lg">
             <h3 className="text-xl font-semibold mb-2 text-white">Governance</h3>
             <p className="text-white/80">
               Board diversity and corporate transparency measures.
@@ -102,7 +113,7 @@ export default function CompanyPage() {
         </div>
 
         {/* Last Updated */}
-        <div className="mt-8 text-center text-white/60">
+        <div className="mt-12 text-center text-white/60 text-sm">
           Last updated: {companyData.lastUpdated}
         </div>
       </div>
