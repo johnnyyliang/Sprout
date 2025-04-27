@@ -102,19 +102,19 @@ export default function GradeCard({
   };
 
   return (
-    <div className="bg-[#1E88E5] rounded-3xl p-8 border-4 border-[#FFD700] shadow-2xl">
+    <div className="bg-[#1b462e] rounded-3xl p-8 border-4 border-[#292824] shadow-2xl">
       <h2 className="text-3xl font-bold mb-6 text-white text-center">{companyName}</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Overall Score */}
-        <div className="bg-[#4ECDC4] rounded-2xl p-6 text-center">
+        <div className="bg-[#497f69] rounded-2xl p-6 text-center">
           <h3 className="text-xl font-semibold mb-2 text-white">Overall ESG Score</h3>
           <div className="text-5xl font-bold text-white">{overallScore}</div>
           <div className="text-white/80 mt-2">out of 100</div>
         </div>
 
         {/* ESG Breakdown */}
-        <div className="bg-[#4ECDC4] rounded-2xl p-6">
+        <div className="bg-[#497f69] rounded-2xl p-6">
           <h3 className="text-xl font-semibold mb-4 text-white text-center">ESG Breakdown</h3>
           <div className="h-48">
             <Doughnut data={doughnutChartData} options={chartOptions} />
@@ -122,7 +122,7 @@ export default function GradeCard({
         </div>
 
         {/* Historical Performance */}
-        <div className="md:col-span-2 bg-[#4ECDC4] rounded-2xl p-6">
+        <div className="md:col-span-2 bg-[#497f69] rounded-2xl p-6">
           <h3 className="text-xl font-semibold mb-4 text-white text-center">Historical Performance</h3>
           <div className="h-64">
             <Line data={lineChartData} options={chartOptions} />

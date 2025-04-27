@@ -57,7 +57,7 @@ export default function CompanyPage() {
       <div className="max-w-7xl mx-auto">
         {/* Company Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#FFD700]">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#ffd700]">
             {companyData.name}
           </h1>
           <div className="text-xl text-white/80">
@@ -81,19 +81,19 @@ export default function CompanyPage() {
 
         {/* Additional Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-[#4ECDC4] rounded-2xl p-6 border-4 border-[#FFD700]">
+          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
             <h3 className="text-xl font-semibold mb-2 text-white">Environmental Impact</h3>
             <p className="text-white/80">
               Carbon footprint reduction initiatives and renewable energy usage.
             </p>
           </div>
-          <div className="bg-[#4ECDC4] rounded-2xl p-6 border-4 border-[#FFD700]">
+          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
             <h3 className="text-xl font-semibold mb-2 text-white">Social Responsibility</h3>
             <p className="text-white/80">
               Employee welfare programs and community engagement efforts.
             </p>
           </div>
-          <div className="bg-[#4ECDC4] rounded-2xl p-6 border-4 border-[#FFD700]">
+          <div className="bg-[#385e41] rounded-2xl p-6 border-4 border-[#2e3a3f]">
             <h3 className="text-xl font-semibold mb-2 text-white">Governance</h3>
             <p className="text-white/80">
               Board diversity and corporate transparency measures.
