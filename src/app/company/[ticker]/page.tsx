@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import GradeCard from '@/components/GradeCard';
 
 interface Breakdown {
@@ -76,6 +77,15 @@ export default function CompanyPage() {
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Back Button */}
+        <div className="absolute top-8 left-8">
+          <Link href="/">
+            <button className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold transition text-sm">
+              ← Back
+            </button>
+          </Link>
+        </div>
+
         {loading ? (
           <div className="text-center text-white text-2xl">Loading company data...</div>
         ) : error ? (

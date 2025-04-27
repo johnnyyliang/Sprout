@@ -32,7 +32,7 @@ const features = [
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-12 bg-gradient-to-br from-[#0d2b1e] via-[#123d15] to-[#1b5e20] relative z-10">
+    <main className="flex min-h-screen flex-col items-center justify-center p-12 relative z-10">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
         <h1 className="text-7xl font-bold text-center mb-8 text-white">
           Sprout
