@@ -4,7 +4,7 @@
 
 @layer base {
   html, body {
-    @apply bg-gradient-to-br from-[#0F2027] via-[#203A43] to-[#2C5364] text-white;
+    @apply bg-gradient-to-br from-[#0d2b1e] via-[#123d15] to-[#1b5e20] text-white min-h-screen;
   }
 }
 
