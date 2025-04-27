@@ -25,7 +25,17 @@ interface CompanyData {
 export default function CompanyPage() {
   const params = useParams();
   const ticker = params.ticker as string;
-  const [companyData, setCompanyData] = useState<CompanyData | null>(null);
+  const [companyData, setCompanyData] = useState<{
+    labels: string[];
+    prices: number[];
+    companyName: string;
+    overallScore: number;
+    breakdown: {
+      environmental: number;
+      social: number;
+      governance: number;
+    };
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,12 +43,27 @@ export default function CompanyPage() {
     const fetchCompanyData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/esg/${ticker}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch company data');
+        // Fetch ESG data
+        const esgResponse = await fetch(`/api/esg/${ticker}`);
+        if (!esgResponse.ok) {
+          throw new Error('Failed to fetch ESG data');
         }
-        const data = await response.json();
-        setCompanyData(data);
+        const esgData = await esgResponse.json();
+
+        // Fetch stock data to get company name
+        const stockResponse = await fetch(`/api/stock/${ticker}`);
+        if (!stockResponse.ok) {
+          throw new Error('Failed to fetch stock data');
+        }
+        const stockData = await stockResponse.json();
+
+        // Combine the data
+        setCompanyData({
+          ...esgData,
+          companyName: stockData.companyName || ticker,
+          labels: stockData.labels || [],
+          prices: stockData.prices || []
+        });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch company data');
       } finally {
@@ -49,7 +74,7 @@ export default function CompanyPage() {
   }, [ticker]);
 
   return (
-    <main className="min-h-screen p-8" style={{background: '#23432F'}}>
+    <main className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
         {loading ? (
           <div className="text-center text-white text-2xl">Loading company data...</div>
@@ -60,14 +85,15 @@ export default function CompanyPage() {
             {/* Company Header */}
             <div className="mb-12 text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-                {companyData.ticker}
+                {companyData.companyName || ticker}
               </h1>
             </div>
 
             {/* ESG Grade Card */}
             <div className="mb-12">
               <GradeCard
-                companyName={companyData.ticker}
+                companyName={companyData.companyName || ticker}
+                ticker={ticker}
                 overallScore={companyData.overallScore}
                 environmentalScore={companyData.breakdown.environmental}
                 socialScore={companyData.breakdown.social}

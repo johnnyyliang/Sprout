@@ -27,6 +27,7 @@ ChartJS.register(
 
 interface GradeCardProps {
   companyName: string;
+  ticker: string;
   overallScore: number;
   environmentalScore: number;
   socialScore: number;
@@ -35,6 +36,7 @@ interface GradeCardProps {
 
 export default function GradeCard({
   companyName,
+  ticker,
   overallScore,
   environmentalScore,
   socialScore,
@@ -49,7 +51,7 @@ export default function GradeCard({
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`/api/stock/${companyName}`);
+        const response = await fetch(`/api/stock/${ticker}`);
         if (!response.ok) {
           throw new Error('Failed to fetch stock data');
         }
@@ -67,7 +69,7 @@ export default function GradeCard({
     };
 
     fetchStockData();
-  }, [companyName]);
+  }, [ticker]);
 
   // Line chart data for historical performance
   const lineChartData = {
@@ -178,7 +180,7 @@ export default function GradeCard({
 
   return (
     <div className="bg-[#1b462e] rounded-3xl p-8 shadow-2xl">
-      <h2 className="text-3xl font-bold mb-6 text-white text-center">{companyName}</h2>
+      <h2 className="text-3xl font-bold mb-6 text-white text-center">{ticker}</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Overall Score */}

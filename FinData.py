@@ -15,6 +15,10 @@ os.environ['PYTHONWARNINGS'] = 'ignore'
 
 def get_stock_data(ticker):
     try:
+        # Get company info first
+        company = yf.Ticker(ticker)
+        company_name = company.info.get('longName', ticker)
+        
         # Get 6 months historical data
         end_date = datetime.now()
         start_date = end_date - timedelta(days=180)
@@ -46,7 +50,8 @@ def get_stock_data(ticker):
         # Create the response data
         response_data = {
             "labels": dates,
-            "prices": prices
+            "prices": prices,
+            "companyName": company_name
         }
         
         print(json.dumps(response_data))
