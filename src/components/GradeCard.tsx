@@ -12,6 +12,7 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
+import { useState, useEffect } from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -39,13 +40,42 @@ export default function GradeCard({
   socialScore,
   governanceScore
 }: GradeCardProps) {
+  const [stockData, setStockData] = useState<{ labels: string[], prices: number[] } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStockData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(`/api/stock/${companyName}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch stock data');
+        }
+        const data = await response.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        setStockData(data);
+      } catch (error) {
+        console.error('Error fetching stock data:', error);
+        setError(error instanceof Error ? error.message : 'Failed to fetch stock data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStockData();
+  }, [companyName]);
+
   // Line chart data for historical performance
   const lineChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: stockData?.labels || [],
     datasets: [
       {
-        label: 'ESG Score Trend',
-        data: [65, 70, 75, 80, 85, 85],
+        label: 'Stock Price ($)',
+        data: stockData?.prices || [],
         borderColor: '#34D399', // soft mint green line
         backgroundColor: '#34D399', // matching color
         pointBackgroundColor: '#34D399', // dots same color
@@ -100,21 +130,25 @@ export default function GradeCard({
     plugins: {
       legend: {
         display: true,
-        position: 'right' as const, // Put legend at top
-        align: 'start' as const, // Push it to the right
+        position: 'top' as const,
         labels: {
-          color: '#ffffff', // make legend text white
+          color: '#ffffff',
           boxWidth: 20,
           boxHeight: 20,
-          usePointStyle: true, // use a circle instead of a box for the legend icon
-          pointStyle: 'circle', // make it a nice clean dot
+          usePointStyle: true,
+          pointStyle: 'circle',
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => `$${context.parsed.y.toFixed(2)}`,
         },
       },
     },
     scales: {
       x: {
         ticks: {
-          color: '#ffffff', // x-axis labels white
+          color: '#ffffff',
           font: {
             size: 14,
           },
@@ -124,16 +158,19 @@ export default function GradeCard({
         },
       },
       y: {
-        beginAtZero: true,
+        beginAtZero: false,
         ticks: {
-          color: '#ffffff', // y-axis labels white
+          color: '#ffffff',
           font: {
             size: 14,
           },
+          callback: function(this: any, value: string | number) {
+            return `$${value}`;
+          }
         },
         grid: {
           color: 'rgba(255,255,255,0.1)',
-          borderColor: 'rgba(255,255,255,0.2)'
+          borderColor: 'rgba(255,255,255,0.2)',
         },
       },
     },
@@ -148,10 +185,13 @@ export default function GradeCard({
         <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-300 flex flex-col justify-center items-center h-64">
           <h3 className="text-xl font-semibold text-white text-center mb-4">Overall ESG Score</h3>
           <div className="flex-1 flex flex-col justify-center items-center">
-            <div className="text-6xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <div className={`text-6xl font-extrabold ${
+              overallScore <= 20 ? 'text-green-400' :
+              overallScore <= 40 ? 'text-yellow-400' :
+              'text-red-400'
+            }`}>
               {overallScore}
             </div>
-          <div className="text-white/80 mt-2">out of 100</div>
           </div>
         </div>
 
@@ -185,10 +225,24 @@ export default function GradeCard({
 
         {/* Historical Performance */}
         <div className="md:col-span-2 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-300">
-         <h3 className="text-xl font-semibold mb-4 text-white text-center">Historical Performance</h3>
+         <h3 className="text-xl font-semibold mb-4 text-white text-center">Stock Price Performance</h3>
          <div className="flex justify-center">
            <div className="h-64 w-full max-w-xl">
-              <Line data={lineChartData} options={lineChartOptions} />
+              {loading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-white">Loading stock data...</div>
+                </div>
+              ) : error ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-red-400">{error}</div>
+                </div>
+              ) : stockData && stockData.prices.length > 0 ? (
+                <Line data={lineChartData} options={lineChartOptions} />
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-white">No stock data available</div>
+                </div>
+              )}
             </div>
          </div>
         </div>

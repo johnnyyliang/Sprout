@@ -1,58 +1,65 @@
 import yfinance as yf
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+import json
 from datetime import datetime, timedelta
+import pandas as pd
+import numpy as np
+import sys
+import warnings
+import urllib3
+import os
 
-def analyze_stock(ticker):
-    # 1. Get 1 year historical data
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=365)
-    
-    stock = yf.download(ticker, start=start_date, end=end_date)
-    
-    if stock.empty:
-        print(f"No data found for {ticker}")
+# Suppress all warnings and redirect stderr
+warnings.filterwarnings('ignore')
+urllib3.disable_warnings()
+os.environ['PYTHONWARNINGS'] = 'ignore'
+
+def get_stock_data(ticker):
+    try:
+        # Get 6 months historical data
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=180)
+        
+        # Suppress all output during download
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = open(os.devnull, 'w')
+        sys.stderr = open(os.devnull, 'w')
+        
+        try:
+            stock = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+        
+        if stock.empty:
+            print(json.dumps({"error": f"No data found for {ticker}"}))
+            return
+
+        # Resample data to get monthly averages
+        monthly_data = stock['Close'].resample('ME').mean()
+        
+        # Format the data for the frontend
+        dates = [d.strftime('%b') for d in monthly_data.index]
+        # Convert numpy values to Python native types
+        prices = [round(float(np.asarray(p).item()), 2) for p in monthly_data.values]
+        
+        # Create the response data
+        response_data = {
+            "labels": dates,
+            "prices": prices
+        }
+        
+        print(json.dumps(response_data))
+        
+    except Exception as e:
+        print(json.dumps({"error": str(e)}))
         return
-    
-    # 2. Plot historical close prices
-    plt.figure(figsize=(10,5))
-    plt.plot(stock.index, stock['Close'], label='Close Price')
-    plt.title(f'{ticker} Closing Price Over Last Year')
-    plt.xlabel('Date')
-    plt.ylabel('Price ($)')
-    plt.legend()
-    plt.grid(True)
-    
-    plt.show(block=False)
-    plt.pause(3)
-    plt.close()
-    
-    # 3. Predict future growth using Linear Regression
-    stock = stock.reset_index()
-    stock['Days'] = (stock['Date'] - stock['Date'].min()).dt.days
-    X = stock[['Days']]
-    y = stock['Close']
-    
-    model = LinearRegression()
-    model.fit(X, y)
-    
-    # Predict price 365 days into the future
-    future_day = np.array([[stock['Days'].max() + 365]])
-    predicted_price = model.predict(future_day)[0].item()  # ensure float
-    current_price = float(stock['Close'].iloc[-1])          # ensure float
-    
-    # 4. Decide Invest or Not
-    growth_percentage = float((predicted_price - current_price) / current_price * 100)
-    decision = "INVEST ✅" if growth_percentage > 10 else "DON'T INVEST ❌"
-    
-    # 5. Output
-    print(f"\n=== {ticker} Analysis ===")
-    print(f"Current Price: ${current_price:.2f}")
-    print(f"Projected Price in 1 Year: ${predicted_price:.2f}")
-    print(f"Expected Growth: {growth_percentage:.2f}%")
-    print(f"Decision: {decision}\n")
 
-# Example usage
 if __name__ == "__main__":
-    analyze_stock('AAPL')
+    import sys
+    if len(sys.argv) != 2:
+        print(json.dumps({"error": "Usage: python FinData.py <ticker>"}))
+        sys.exit(1)
+    
+    ticker = sys.argv[1]
+    get_stock_data(ticker)
