@@ -36,8 +36,7 @@ def get_stock_data(ticker):
             sys.stderr = old_stderr
         
         if stock.empty:
-            print(json.dumps({"error": f"No data found for {ticker}"}))
-            return
+            return {"error": f"No data found for {ticker}"}
 
         # Resample data to get monthly averages
         monthly_data = stock['Close'].resample('ME').mean()
@@ -54,17 +53,16 @@ def get_stock_data(ticker):
             "companyName": company_name
         }
         
-        print(json.dumps(response_data))
+        return response_data
         
     except Exception as e:
-        print(json.dumps({"error": str(e)}))
-        return
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print(json.dumps({"error": "Usage: python FinData.py <ticker>"}))
         sys.exit(1)
     
     ticker = sys.argv[1]
-    get_stock_data(ticker)
+    result = get_stock_data(ticker)
+    print(json.dumps(result))

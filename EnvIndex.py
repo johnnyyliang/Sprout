@@ -81,15 +81,12 @@ def get_esg_scores(ticker):
         return scores
         
     except requests.exceptions.RequestException as e:
-        print(f"Network error fetching data for {ticker}: {e}", file=sys.stderr)
         return None
     except Exception as e:
-        print(f"Error processing data for {ticker}: {e}", file=sys.stderr)
         return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python EnvIndex.py <ticker>", file=sys.stderr)
         sys.exit(1)
     
     ticker = sys.argv[1]
